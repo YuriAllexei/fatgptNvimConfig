@@ -110,6 +110,10 @@ vim.opt.mouse = 'a'
 -- Don't show the mode, since it's already in the status line
 vim.opt.showmode = false
 
+--Obsidian general conf
+
+vim.opt.conceallevel = 1
+
 -- Sync clipboard between OS and Neovim.
 --  Remove this option if you want your OS clipboard to remain independent.
 --  See `:help 'clipboard'`
@@ -164,6 +168,13 @@ vim.keymap.set('n', '<Esc>', '<cmd>nohlsearch<CR>')
 --Terminal keymaps
 vim.keymap.set({ 'n', 't' }, '<leader>tt', '<cmd>ToggleTerm<CR>')
 
+--yankking
+vim.keymap.set({ 'n', 'v' }, '<leader>y', [["+y"]], { desc = 'Copy to system' })
+
+-- Split
+vim.keymap.set('n', '<leader>wh', '<cmd>split<CR>', { desc = 'Split window horizontally' })
+vim.keymap.set('n', '<leader>wv', '<cmd>vsplit<CR>', { desc = 'Split window vertically' })
+
 -- Diagnostic keymaps
 vim.keymap.set('n', '[d', vim.diagnostic.goto_prev, { desc = 'Go to previous [D]iagnostic message' })
 vim.keymap.set('n', ']d', vim.diagnostic.goto_next, { desc = 'Go to next [D]iagnostic message' })
@@ -192,6 +203,27 @@ vim.keymap.set('n', '<C-h>', '<C-w><C-h>', { desc = 'Move focus to the left wind
 vim.keymap.set('n', '<C-l>', '<C-w><C-l>', { desc = 'Move focus to the right window' })
 vim.keymap.set('n', '<C-j>', '<C-w><C-j>', { desc = 'Move focus to the lower window' })
 vim.keymap.set('n', '<C-k>', '<C-w><C-k>', { desc = 'Move focus to the upper window' })
+
+-- Obsidian Keymaps
+
+-- navigate to vault
+vim.keymap.set('n', '<leader>oo', ':cd /home/rednexikan/Documents/fatgpt-fault<cr>')
+
+-- convert note to template and remove leading white space
+vim.keymap.set('n', '<leader>on', ':ObsidianTemplate note<cr> :lua vim.cmd([[1,/^\\S/s/^\\n\\{1,}//]])<cr>')
+-- strip date from note title and replace dashes with spaces
+-- must have cursor on title
+vim.keymap.set('n', '<leader>of', ':s/\\(# \\)[^_]*_/\\1/ | s/-/ /g<cr>')
+
+-- search for files in full vault
+vim.keymap.set('n', '<leader>os', ':Telescope find_files search_dirs={"/home/rednexikan/Documents/fatgpt-fault"}<cr>')
+vim.keymap.set('n', '<leader>oz', ':Telescope live_grep search_dirs={"/home/rednexikan/Documents/fatgpt-fault"}<cr>')
+
+--obsidian workflows
+-- move file in current buffer to zettelkasten folder
+vim.keymap.set('n', '<leader>ok', ":!mv '%:p' /home/rednexikan/Documents/fatgpt-fault/zettelkasten<cr>:bd<cr>")
+-- delete file in current buffer
+vim.keymap.set('n', '<leader>odd', ":!rm '%:p'<cr>:bd<cr>")
 
 -- [[ Basic Autocommands ]]
 --  See `:help lua-guide-autocommands`
@@ -541,7 +573,7 @@ require('lazy').setup({
       --  - settings (table): Override the default settings passed when initializing the server.
       --        For example, to see the options for `lua_ls`, you could go to: https://luals.github.io/wiki/settings/
       local servers = {
-        -- clangd = {},
+        clangd = {},
         gopls = {},
         pyright = {},
         rust_analyzer = {},
@@ -845,6 +877,9 @@ require('lazy').setup({
   require 'kickstart.plugins.autopairs',
   require 'kickstart.plugins.debug',
   require 'kickstart.plugins.toggleterm',
+  require 'kickstart.plugins.obsidian',
+  require 'kickstart.plugins.tmux',
+  require 'kickstart.plugins.noice',
   -- require 'kickstart.plugins.lint',
 
   -- NOTE: The import below can automatically add your own plugins, configuration, etc from `lua/custom/plugins/*.lua`
